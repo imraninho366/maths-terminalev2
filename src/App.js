@@ -373,6 +373,17 @@ const CHAPTERS = [
 { name: "Méthode éq. diff.", formula: "1) Sol. gén. 2) Condition init. → C" },
 { name: "Vérification", formula: "Toujours dériver F pour vérifier F' = f" },
 ],
+    traps: [
+      { mistake: "Oublier le + C", correct: "∫ 2x dx = x² + C", wrong: "∫ 2x dx = x²", tip: "Une primitive n'est jamais unique ! Il y a toujours une constante C. Sans condition initiale → garder + C." },
+      { mistake: "Oublier le [[1|a]] devant", correct: "∫ e³ˣ dx = [[1|3]]e³ˣ + C", wrong: "∫ e³ˣ dx = e³ˣ + C", tip: "Quand on a f(ax+b), on divise toujours par a. Vérifier en dérivant : ([[1|3]]e³ˣ)' = e³ˣ ✓" },
+      { mistake: "Primitive de sin = cos (sans le −)", correct: "∫ sin(x) dx = −cos(x) + C", wrong: "∫ sin(x) dx = cos(x) + C", tip: "Moyen mnémotechnique : Sin Commence par S = Signe change (le − apparaît)." },
+      { mistake: "Confondre y'=ay et y'=ay+b", correct: "y'=2y−6 → y = Ce²ˣ + 3", wrong: "y'=2y−6 → y = Ce²ˣ − 6", tip: "y₀ = −b/a (pas juste b !). Ici −(−6)/2 = 3. Toujours vérifier : si y=3, y'=0 et 2×3−6=0 ✓" },
+      { mistake: "Mauvais signe dans e^(ax)", correct: "y'=−3y → y = Ce⁻³ˣ", wrong: "y'=−3y → y = Ce³ˣ", tip: "Le coefficient a dans y'=ay passe directement dans l'exposant. Si a est négatif, l'exposant l'est aussi." },
+      { mistake: "Oublier de déterminer C", correct: "y(0)=5 → C+y₀=5 → C=...", wrong: "y = Ce^(ax) + y₀ (sans calculer C)", tip: "La condition initiale sert à trouver C. Remplacer x=0, résoudre l'équation en C." },
+      { mistake: "Primitive de [[1|x]] = [[1|x²]]", correct: "∫ [[1|x]] dx = ln│x│ + C", wrong: "∫ [[1|x]] dx = [[1|x²]] + C", tip: "[[1|x²]] = −(x⁻¹)', c'est la DÉRIVÉE de −[[1|x]], pas sa primitive. ∫[[1|x]] = ln│x│." },
+      { mistake: "Ne pas reconnaître la forme u'/u", correct: "∫ [[2x|x²+1]] = ln(x²+1) + C", wrong: "Je ne sais pas faire cette primitive", tip: "Toujours regarder si le numérateur est la dérivée du dénominateur → c'est un ln !" },
+      { mistake: "Confondre primitive et dérivée", correct: "Primitive = l'opération inverse de dériver", wrong: "F' = f donc F est la dérivée de f", tip: "F est primitive de f signifie F' = f. C'est f qui est la dérivée, F est la primitive." },
+    ],
     quiz: [
       { q: "Primitive de 3x²:", choices: ["x³+C", "6x+C", "x³", "3x³+C"], answer: 0, explanation: "3x²→x³+C." },
       { q: "Primitive de sin(x) :", choices: ["−cos(x)+C", "cos(x)+C", "sin(x)+C", "−sin(x)+C"], answer: 0, explanation: "(−cos x)' = sin x." },
@@ -869,8 +880,7 @@ const EXAMS={
     {name:"Exercices complets Sinus & Cosinus",url:LDA+"/06_fnts_sinus_cosinus/06_exos_fnts_sinus_cosinus.pdf"},
   ],
   primitives:[
-    {name:"Exercices Primitives & Éq. diff.",url:LDA+"/07_primitives-eq_diff/07_exos_primitives_eq_diff.pdf"},
-    {name:"Tableau des primitives (référence)",url:LDA+"/07_primitives-eq_diff/07_tableau_primitives.pdf"},
+    {name:"Révision Fonctions, suites, éq. diff., intégrales (avec corrigé)",url:LDA+"/16_revision/2025_seance_21_05.pdf",corr:true},
   ],
   integration:[
     {name:"Exercices Calcul intégral",url:LDA+"/08_calcul_integral/08_exos_calcul_integral.pdf"},
@@ -917,6 +927,10 @@ const BAC_TYPES={
   ],
   derivation:[
     {name:"Exercices BAC corrigés — Fonctions (xymaths.fr)",url:"https://xymaths.fr/Lycee/Terminale-generale-specialite-mathematiques/exercices-bac-sujets-corriges/exponentielle-logarithme-ln.php",desc:"Dérivation, tableau de variations, tangente, convexité"},
+  ],
+  primitives:[
+    {name:"Exercices BAC corrigés — Intégrales & Primitives (xymaths.fr)",url:"https://xymaths.fr/Lycee/Terminale-generale-specialite-mathematiques/exercices-bac-sujets-corriges/integrales.php",desc:"Primitives, éq. diff., calcul d'aire — sujets BAC avec corrigés détaillés"},
+    {name:"Cours + exercices corrigés — Primitives (spe-maths.fr)",url:"https://spe-maths.fr/primitives/",desc:"Cours complet + exercices corrigés type BAC sur les primitives"},
   ],
   integration:[
     {name:"Exercices BAC corrigés — Fonctions avec intégrales (xymaths.fr)",url:"https://xymaths.fr/Lycee/Terminale-generale-specialite-mathematiques/exercices-bac-sujets-corriges/exponentielle-logarithme-ln.php",desc:"Calcul d'aire, IPP, primitives"},
@@ -1504,7 +1518,7 @@ return(<div style={A}><style>{CSS}</style><div style={C}>{N}
     {ch.exerciseVideos?.length>0?<Sec><h3 style={{marginBottom:8,fontSize:16,fontWeight:700,color:"var(--gn)"}}>Exercices vidéo</h3>{ch.exerciseVideos.map((v,i)=><VL key={i} v={v} bg="rgba(52,211,153,.06)"/>)}</Sec>:null}
   </div>}
 
-  {tab==="formules"&&<Sec><h3 style={{marginBottom:12,fontSize:16,fontWeight:700,color:"var(--ac)"}}>Formules</h3>{ch.keyFormulas.map((f,i)=><div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",marginBottom:5,borderRadius:8,background:"var(--bg3)",border:"1px solid var(--bd)"}}><span style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{f.name}</span><span style={{fontSize:14,fontWeight:700,color:ch.color,...mono}}><MathText text={f.formula}/></span></div>)}{ch.formulaLinks?.length>0?<div style={{marginTop:14}}><h4 style={{fontSize:13,fontWeight:700,color:"var(--or)",marginBottom:8}}>Documents de référence</h4>{ch.formulaLinks.map((l,i)=><a key={i} href={l.url} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",marginBottom:5,borderRadius:8,background:"rgba(251,191,36,.06)",border:"1px solid rgba(251,191,36,.12)",textDecoration:"none",color:"var(--tx)",fontSize:13}}><span style={{fontSize:14}}>📋</span><span style={{fontWeight:600,flex:1}}>{l.name}</span><span style={{color:"var(--or)",fontSize:12}}>PDF →</span></a>)}</div>:null}</Sec>}
+  {tab==="formules"&&<Sec><h3 style={{marginBottom:12,fontSize:16,fontWeight:700,color:"var(--ac)"}}>Formules</h3>{ch.keyFormulas.map((f,i)=><div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",marginBottom:5,borderRadius:8,background:"var(--bg3)",border:"1px solid var(--bd)"}}><span style={{fontSize:12,fontWeight:600,color:"var(--tx2)"}}>{f.name}</span><span style={{fontSize:14,fontWeight:700,color:ch.color,...mono}}><MathText text={f.formula}/></span></div>)}{ch.formulaLinks?.length>0?<div style={{marginTop:14}}><h4 style={{fontSize:13,fontWeight:700,color:"var(--or)",marginBottom:8}}>Documents de référence</h4>{ch.formulaLinks.map((l,i)=><a key={i} href={l.url} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",marginBottom:5,borderRadius:8,background:"rgba(251,191,36,.06)",border:"1px solid rgba(251,191,36,.12)",textDecoration:"none",color:"var(--tx)",fontSize:13}}><span style={{fontSize:14}}>📋</span><span style={{fontWeight:600,flex:1}}>{l.name}</span><span style={{color:"var(--or)",fontSize:12}}>PDF →</span></a>)}</div>:null}{ch.traps?.length>0?<div style={{marginTop:18}}><h4 style={{fontSize:14,fontWeight:700,color:"var(--rd)",marginBottom:10}}>⚠ Pièges classiques à éviter</h4>{ch.traps.map((t,i)=><div key={i} style={{marginBottom:8,borderRadius:10,overflow:"hidden",border:"1px solid rgba(248,113,113,.15)"}}><div style={{padding:"10px 14px",background:"rgba(248,113,113,.06)",display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12,fontWeight:700,color:"var(--rd)"}}>✗</span><span style={{fontSize:13,fontWeight:700,color:"var(--tx)"}}>{t.mistake}</span></div><div style={{padding:"10px 14px",fontSize:12,lineHeight:1.7}}><div style={{display:"flex",gap:8,marginBottom:4}}><span style={{color:"var(--rd)",fontWeight:700,flexShrink:0,...mono}}>✗</span><span style={{color:"var(--tx3)",textDecoration:"line-through"}}><MathText text={t.wrong}/></span></div><div style={{display:"flex",gap:8,marginBottom:6}}><span style={{color:"var(--gn)",fontWeight:700,flexShrink:0,...mono}}>✓</span><span style={{color:"var(--gn)",fontWeight:600}}><MathText text={t.correct}/></span></div><div style={{fontSize:11,color:"var(--or)",background:"rgba(251,191,36,.06)",padding:"6px 10px",borderRadius:6,lineHeight:1.6}}><MathText text={t.tip}/></div></div></div>)}</div>:null}</Sec>}
 
   {tab==="quiz"&&<div>{!qDone?<>
     <div style={{display:"flex",gap:3,marginBottom:14}}>{ch.quiz.map((_,i)=><div key={i} onClick={()=>setQIdx(i)} style={{flex:1,height:3,borderRadius:2,cursor:"pointer",background:qa[i]!==undefined?ch.color:i===qIdx?ch.color+"66":"var(--bg4)"}}/>)}</div>
